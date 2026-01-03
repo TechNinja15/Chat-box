@@ -1,212 +1,241 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Chat APP</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <style>
-      :root {
-        --bg-color: #0f172a;
-        --container-bg: #1e293b;
-        --text-primary: #f1f5f9;
-        --text-secondary: #94a3b8;
-        --accent-color: #3b82f6;
-        --accent-hover: #2563eb;
-        --input-bg: #334155;
-        --border-color: #475569;
-        --message-bg-user: #3b82f6;
-        --message-bg-others: #334155;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Chat APP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg-color: #0f172a;
+      --container-bg: #1e293b;
+      --text-primary: #f1f5f9;
+      --text-secondary: #94a3b8;
+      --accent-color: #3b82f6;
+      --accent-hover: #2563eb;
+      --input-bg: #334155;
+      --border-color: #475569;
+      --message-bg-user: #3b82f6;
+      --message-bg-others: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-primary);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .chat-container {
+      width: 100%;
+      max-width: 600px;
+      background-color: var(--container-bg);
+      border-radius: 16px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      height: 80vh;
+    }
+
+    .chat-header {
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border-color);
+      background-color: rgba(30, 41, 59, 0.95);
+    }
+
+    .chat-header h1 {
+      font-size: 1.25rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    #messages {
+      flex: 1;
+      padding: 24px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .message {
+      max-width: 80%;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      line-height: 1.5;
+      word-wrap: break-word;
+      background-color: var(--message-bg-others);
+      align-self: flex-start;
+      color: var(--text-primary);
+      animation: fadeIn 0.3s ease;
+    }
+
+    /* Identify user messages vs others if feasible, currently purely client-side */
+    /* Ideally we'd add class based on sender, but keeping simple for now as per minimal change request */
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
       }
 
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
+      to {
+        opacity: 1;
+        transform: translateY(0);
       }
+    }
 
-      body {
-        font-family: 'Inter', sans-serif;
-        background-color: var(--bg-color);
-        color: var(--text-primary);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        padding: 20px;
-      }
+    .input-area {
+      padding: 20px 24px;
+      border-top: 1px solid var(--border-color);
+      display: flex;
+      gap: 12px;
+      background-color: var(--container-bg);
+    }
 
-      .chat-container {
-        width: 100%;
-        max-width: 600px;
-        background-color: var(--container-bg);
-        border-radius: 16px;
-        box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5), 0 8px 10px -6px rgba(0, 0, 0, 0.5);
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        height: 80vh;
-      }
+    input[type="text"] {
+      flex: 1;
+      background-color: var(--input-bg);
+      border: 1px solid transparent;
+      color: var(--text-primary);
+      padding: 12px 16px;
+      border-radius: 9999px;
+      /* Pill shape */
+      font-family: inherit;
+      font-size: 1rem;
+      transition: all 0.2s;
+      outline: none;
+    }
 
-      .chat-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--border-color);
-        background-color: rgba(30, 41, 59, 0.95);
-      }
+    input[type="text"]:focus {
+      border-color: var(--accent-color);
+      box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+    }
 
-      .chat-header h1 {
-        font-size: 1.25rem;
-        font-weight: 600;
-        color: var(--text-primary);
-      }
+    input[type="text"]::placeholder {
+      color: var(--text-secondary);
+    }
 
-      #messages {
-        flex: 1;
-        padding: 24px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 12px;
-      }
+    button#sendBtn {
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      transition: background-color 0.2s, transform 0.1s;
+    }
 
-      .message {
-        max-width: 80%;
-        padding: 10px 16px;
-        border-radius: 12px;
-        font-size: 0.95rem;
-        line-height: 1.5;
-        word-wrap: break-word;
-        background-color: var(--message-bg-others);
-        align-self: flex-start;
-        color: var(--text-primary);
-        animation: fadeIn 0.3s ease;
-      }
-      
-      /* Identify user messages vs others if feasible, currently purely client-side */
-      /* Ideally we'd add class based on sender, but keeping simple for now as per minimal change request */
+    button#sendBtn:hover {
+      background-color: var(--accent-hover);
+    }
 
-      @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-      }
+    button#sendBtn:active {
+      transform: scale(0.98);
+    }
 
-      .input-area {
-        padding: 20px 24px;
-        border-top: 1px solid var(--border-color);
-        display: flex;
-        gap: 12px;
-        background-color: var(--container-bg);
-      }
+    /* Custom Scrollbar */
+    #messages::-webkit-scrollbar {
+      width: 8px;
+    }
 
-      input[type="text"] {
-        flex: 1;
-        background-color: var(--input-bg);
-        border: 1px solid transparent;
-        color: var(--text-primary);
-        padding: 12px 16px;
-        border-radius: 9999px; /* Pill shape */
-        font-family: inherit;
-        font-size: 1rem;
-        transition: all 0.2s;
-        outline: none;
-      }
+    #messages::-webkit-scrollbar-track {
+      background: transparent;
+    }
 
-      input[type="text"]:focus {
-        border-color: var(--accent-color);
-        box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
-      }
+    #messages::-webkit-scrollbar-thumb {
+      background-color: var(--input-bg);
+      border-radius: 20px;
+      border: 3px solid var(--container-bg);
+    }
+  </style>
+</head>
 
-      input[type="text"]::placeholder {
-        color: var(--text-secondary);
-      }
-
-      button#sendBtn {
-        background-color: var(--accent-color);
-        color: white;
-        border: none;
-        padding: 12px 24px;
-        border-radius: 9999px;
-        font-weight: 600;
-        font-family: inherit;
-        cursor: pointer;
-        transition: background-color 0.2s, transform 0.1s;
-      }
-
-      button#sendBtn:hover {
-        background-color: var(--accent-hover);
-      }
-
-      button#sendBtn:active {
-        transform: scale(0.98);
-      }
-
-      /* Custom Scrollbar */
-      #messages::-webkit-scrollbar {
-        width: 8px;
-      }
-      #messages::-webkit-scrollbar-track {
-        background: transparent;
-      }
-      #messages::-webkit-scrollbar-thumb {
-        background-color: var(--input-bg);
-        border-radius: 20px;
-        border: 3px solid var(--container-bg);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="chat-container">
-      <div class="chat-header">
-        <h1>Chat Room</h1>
-      </div>
-
-      <div id="messages">
-        <!-- Messages will appear here -->
-        <p class="message" style="background-color: var(--bg-color); color: var(--text-secondary); align-self: center; font-size: 0.875rem;">Welcome to the chatroom!</p>
-      </div>
-
-      <div class="input-area">
-        <input type="text" id="message" placeholder="Type a message..." autocomplete="off" />
-        <button id="sendBtn">Send</button>
-      </div>
+<body>
+  <div class="chat-container">
+    <div class="chat-header">
+      <h1>Chat Room</h1>
     </div>
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-      const socket = io();
-      const sendBtn = document.getElementById("sendBtn");
-      const messageInput = document.getElementById("message");
-      const allMessages = document.getElementById("messages");
+    <div id="messages">
+      <!-- Messages will appear here -->
+      <p class="message"
+        style="background-color: var(--bg-color); color: var(--text-secondary); align-self: center; font-size: 0.875rem;">
+        Welcome to the chatroom!</p>
+    </div>
 
-      socket.on("message", (message) => {
-        const p = document.createElement("p");
-        p.innerText = message;
-        p.classList.add("message");
-        allMessages.appendChild(p);
-        // Auto scroll to bottom
-        allMessages.scrollTop = allMessages.scrollHeight;
-      });
+    <div class="input-area">
+      <input type="text" id="message" placeholder="Type a message..." autocomplete="off" />
+      <button id="sendBtn">Send</button>
+    </div>
+  </div>
 
-      const sendMessage = () => {
-        const message = messageInput.value;
-        if (message.trim()) {
-            console.log(message);
-            socket.emit("user-message", message);
-            messageInput.value = ""; // Clear input after sending
-        }
-      };
+  <script src="/socket.io/socket.io.js"></script>
+  <script>
+    const socket = io();
+    const sendBtn = document.getElementById("sendBtn");
+    const messageInput = document.getElementById("message");
+    const allMessages = document.getElementById("messages");
 
-      sendBtn.addEventListener("click", sendMessage);
-      
-      // Allow pressing Enter to send
-      messageInput.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
-            sendMessage();
-        }
-      });
-    </script>
-  </body>
+    socket.on("history", (history) => {
+      // Clear default welcome message if history exists
+      if (history.length > 0) {
+        // Remove any welcoming "emptiness" if strict history is preferred, 
+        // but keeping the hardcoded welcome message separately is usually fine.
+        // For cleaner UI, let's keep the Welcome message but append history after.
+      }
+
+      history.forEach(msg => appendMessage(msg));
+    });
+
+    const appendMessage = (message) => {
+      const p = document.createElement("p");
+      p.innerText = message;
+      p.classList.add("message");
+      allMessages.appendChild(p);
+      allMessages.scrollTop = allMessages.scrollHeight;
+    };
+
+    socket.on("message", (message) => {
+      appendMessage(message);
+    });
+
+    const sendMessage = () => {
+      const message = messageInput.value;
+      if (message.trim()) {
+        console.log(message);
+        socket.emit("user-message", message);
+        messageInput.value = ""; // Clear input after sending
+      }
+    };
+
+    sendBtn.addEventListener("click", sendMessage);
+
+    // Allow pressing Enter to send
+    messageInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") {
+        sendMessage();
+      }
+    });
+  </script>
+</body>
+
 </html>
