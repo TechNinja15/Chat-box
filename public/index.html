@@ -56,6 +56,27 @@
       padding: 20px 24px;
       border-bottom: 1px solid var(--border-color);
       background-color: rgba(30, 41, 59, 0.95);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    button#clearBtn {
+      background-color: transparent;
+      color: #ef4444;
+      /* Red-500 */
+      border: 1px solid #ef4444;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-family: 'Inter', sans-serif;
+    }
+
+    button#clearBtn:hover {
+      background-color: rgba(239, 68, 68, 0.1);
     }
 
     .chat-header h1 {
@@ -173,6 +194,7 @@
   <div class="chat-container">
     <div class="chat-header">
       <h1>Chat Room</h1>
+      <button id="clearBtn">Clear Chat</button>
     </div>
 
     <div id="messages">
@@ -192,6 +214,7 @@
   <script>
     const socket = io();
     const sendBtn = document.getElementById("sendBtn");
+    const clearBtn = document.getElementById("clearBtn");
     const messageInput = document.getElementById("message");
     const allMessages = document.getElementById("messages");
 
@@ -227,7 +250,27 @@
       }
     };
 
+    const clearChat = () => {
+      if (confirm("Are you sure you want to delete all messages for everyone?")) {
+        socket.emit("clear-chat");
+      }
+    };
+
+    socket.on("chat-cleared", () => {
+      allMessages.innerHTML = '';
+      // Optionally add an empty state message
+      const p = document.createElement("p");
+      p.innerText = "Chat cleared by user.";
+      p.classList.add("message");
+      p.style.backgroundColor = "transparent";
+      p.style.color = "#94a3b8"; // Secondary text color
+      p.style.textAlign = "center";
+      p.style.fontSize = "0.8rem";
+      allMessages.appendChild(p);
+    });
+
     sendBtn.addEventListener("click", sendMessage);
+    clearBtn.addEventListener("click", clearChat);
 
     // Allow pressing Enter to send
     messageInput.addEventListener("keydown", (e) => {
