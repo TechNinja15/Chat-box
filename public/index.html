@@ -251,7 +251,9 @@
     };
 
     const clearChat = () => {
+      console.log("Clear button clicked");
       if (confirm("Are you sure you want to delete all messages for everyone?")) {
+        console.log("User confirmed clear. Emitting event.");
         socket.emit("clear-chat");
       }
     };
